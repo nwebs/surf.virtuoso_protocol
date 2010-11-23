@@ -5,20 +5,66 @@ surf.virtuoso_protocol is a plugin for the Python-based Object-RDF Mapper
 .. _SPARQL protocol: http://www.w3.org/TR/rdf-sparql-query/
 .. _Virtuoso: http://virtuoso.openlinksw.com/dataspace/dav/wiki/Main
 
+Example
+=======
+
+Use OWL sameAs::
+
+    >>> import surf
+    >>> # Create store & session
+    ... store = surf.Store(reader="virtuoso_protocol",
+    ...                    writer="virtuoso_protocol",
+    ...                    endpoint="http://localhost:8890/sparql",
+    ...                    default_context="http://dummy")
+    >>> session = surf.Session(store, {})
+    >>> # John
+    ... Person = session.get_class(surf.ns.FOAF["Person"])
+    >>> john = session.get_resource("http://John", Person)
+    >>> john.foaf_name = 'John'
+    >>> # Jonathan
+    ... jonathan = session.get_resource("http://Jonathan", Person)
+    >>> jonathan.foaf_homepage = 'http://example.com'
+    >>> # owl:sameAs
+    ... john[surf.ns.OWL['sameAs']] = jonathan
+    >>> session.commit()
+    >>> # Set owl:sameAs Inferencing
+    ... store.reader.define = 'input:same-as "yes"'
+    >>> # Query
+    ... query = surf.query.select("?s").from_("http://dummy")\
+    ...                   .where((jonathan.subject, surf.ns.FOAF['name'], '?s'))
+    >>> store.execute_sparql(unicode(query))
+    {'results': {'bindings': [{'s': rdflib.Literal(u'John')}]}}
+
 About
 =====
-Virtuoso kann be accessed via `SuRF's sparql_protocol`_
+
+Virtuoso kann be accessed via `SuRF's sparql_protocol`_ 
 handler. However, for making use of `Virtuoso's inferencing & reasoning`_
 support a specialized SPARQL syntax is needed, which this plugin can
-accommodate.
+accommodate. Technically this plugin extends SuRF's sparql_protocol plugin with
+functionality needed for Virtuoso.
 
 .. _SuRF's sparql_protocol: 
    http://packages.python.org/SuRF/plugins/sparql_protocol.html
 .. _Virtuoso's inferencing & reasoning:
    http://docs.openlinksw.com/virtuoso/rdfsparqlrule.html
 
+Unit testing
+============
+Run::
+
+    $ python setup.py test
+
+Similar packages
+================
+* surf.sparql_protocol - SuRF SPARQL protocol plugin (mentioned above), allows
+  access to Virtuoso's standard SPARQL features.
+* Python-Virtuoso - OpenLink Virtuoso Support for SQLAlchemy and RDFLib,
+  http://pypi.python.org/pypi/virtuoso/, provides access through ODBC
+
 Dependencies
 ============
 
 * SuRF, http://code.google.com/p/surfrdf/
 * surf.sparql_protocol, http://pypi.python.org/pypi/surf.sparql_protocol
+
