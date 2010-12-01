@@ -29,8 +29,8 @@ class TestSparqlProtocol(TestCase):
 
         # FIXME: take endpoint from configuration file,
         # maybe we can mock SPARQL endpoint.
-        kwargs = {"reader": "sparql_protocol",
-                  "writer" : "sparql_protocol",
+        kwargs = {"reader": "virtuoso_protocol",
+                  "writer" : "virtuoso_protocol",
                   "endpoint" : "http://localhost:8890/sparql",
                   "use_subqueries" : True,
                   "combine_queries" : True,
