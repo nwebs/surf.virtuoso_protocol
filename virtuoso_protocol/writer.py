@@ -28,4 +28,13 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGE.
 
-from sparql_protocol.writer import WriterPlugin
+from sparql_protocol.writer import WriterPlugin as SPARQLWriterPlugin
+
+
+class WriterPlugin(SPARQLWriterPlugin):
+    def __init__(self, *args, **kwargs):
+        # By default set combine_queries which Virtuoso supports
+        if "combine_queries" not in kwargs:
+            kwargs["combine_queries"] = True
+
+        SPARQLWriterPlugin.__init__(self, *args, **kwargs)
