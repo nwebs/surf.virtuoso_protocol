@@ -38,8 +38,8 @@ Use OWL sameAs::
 About
 =====
 
-Virtuoso kann be accessed via `SuRF's sparql_protocol`_ 
-handler. However, for making use of `Virtuoso's inferencing & reasoning`_
+Virtuoso can be accessed via `SuRF's sparql_protocol`_ handler. 
+However, for making use of `Virtuoso's inferencing & reasoning`_
 support a specialized SPARQL syntax is needed, which this plugin can
 accommodate. Technically this plugin extends SuRF's sparql_protocol plugin with
 functionality needed for Virtuoso.
