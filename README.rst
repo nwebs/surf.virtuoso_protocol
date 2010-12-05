@@ -53,7 +53,7 @@ Unit testing
 ============
 Run::
 
-    $ python setup.py test
+    $ python setup.py nosetests
 
 Similar packages
 ================

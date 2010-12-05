@@ -47,9 +47,9 @@ setup(
     ],
     keywords = 'python Virtuoso SPARQL RDF resource mapper',
     test_suite = "nose.collector",
-    tests_require = "nose",
     packages=['virtuoso_protocol'],
     install_requires=['surf.sparql_protocol>=1.0.0',],
+    setup_requires=['nose>=0.11'],
     entry_points={
 		'surf.plugins.reader': 'virtuoso_protocol = virtuoso_protocol.reader:ReaderPlugin',
 		'surf.plugins.writer': 'virtuoso_protocol = virtuoso_protocol.writer:WriterPlugin',
