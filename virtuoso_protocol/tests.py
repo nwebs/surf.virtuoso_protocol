@@ -7,8 +7,6 @@ import surf
 from surf.query import a, select
 from surf.rdf import Literal
 
-from virtuoso_protocol.test_sparql_protocol_virtuoso import *
-
 class TestVirtuosoProtocol(TestCase):
     """ Tests for virtuoso_protocol plugin. """
     CONTEXT = "http://github.com/nwebs/surf.virtuoso_protocol#surf_test_graph_dummy2"

@@ -46,7 +46,8 @@ setup(
         "Topic :: Utilities",
     ],
     keywords = 'python Virtuoso SPARQL RDF resource mapper',
-    test_suite = "virtuoso_protocol.tests",
+    test_suite = "nose.collector",
+    tests_require = "nose",
     packages=['virtuoso_protocol'],
     install_requires=['surf.sparql_protocol>=1.0.0',],
     entry_points={
