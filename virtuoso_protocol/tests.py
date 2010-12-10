@@ -1,11 +1,16 @@
 # -*- coding: UTF-8 -*-
 """ Module for virtuoso_protocol plugin tests. """
 
+import os
 from unittest import TestCase
 
 import surf
 from surf.query import a, select
 from surf.rdf import Literal
+
+ENV = 'SURF_SPARQL_TEST'
+ENDPOINT = (os.environ[ENV] if ENV in os.environ and os.environ[ENV].strip()
+                            else "http://localhost:8890/sparql")
 
 class TestVirtuosoProtocol(TestCase):
     """ Tests for virtuoso_protocol plugin. """
@@ -16,7 +21,7 @@ class TestVirtuosoProtocol(TestCase):
 
         kwargs = {"reader": "virtuoso_protocol",
                   "writer" : "virtuoso_protocol",
-                  "endpoint" : "http://localhost:8890/sparql",
+                  "endpoint" : ENDPOINT,
                   "use_subqueries" : True,
                   "combine_queries" : True,
                   "default_context": self.CONTEXT}
