@@ -39,16 +39,16 @@ class TestSparqlProtocol(TestCase):
                   "endpoint" : ENDPOINT,
                   "use_subqueries" : True,
                   "combine_queries" : True,
-                  "default_context": self.CONTEXT}
+                  "default_write_context": self.CONTEXT}
         
         if use_default_context:
-            kwargs["default_context"] ="http://surf_test_graph/dummy2" 
+            kwargs["default_context"] = self.CONTEXT
         
         store = surf.Store(**kwargs)
         session = surf.Session(store)
 
         # Fresh start!
-        store.clear("http://surf_test_graph/dummy2")
+        store.clear(self.CONTEXT)
 
         Person = session.get_class(surf.ns.FOAF + "Person")
         for name in ["John", "Mary", "Jane"]:

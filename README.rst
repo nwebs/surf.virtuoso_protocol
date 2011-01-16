@@ -49,6 +49,17 @@ functionality needed for Virtuoso.
 .. _Virtuoso's inferencing & reasoning:
    http://docs.openlinksw.com/virtuoso/rdfsparqlrule.html
 
+Default write context
+---------------------
+Virtuoso's graph implementation knows multiple named graphs and one unnamed
+graph. The unnamed graph built up from the union of all named graphs during
+SPARQL queries. For SPARUL (write access) a named graph needs to be given as
+context. The virtuoso_protocol plugin introduces a ``default_write_context``
+parameter to provide a default context for write access. In contrast to SuRF's
+``default_context`` the application of a write-only context allows for queries
+over all named graphs at once, while still being able to issue writes to a
+dedicated named graph.
+
 Unit testing
 ============
 Run::

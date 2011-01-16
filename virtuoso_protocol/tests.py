@@ -16,7 +16,8 @@ class TestVirtuosoProtocol(TestCase):
     """ Tests for virtuoso_protocol plugin. """
     CONTEXT = "http://github.com/nwebs/surf.virtuoso_protocol#surf_test_graph_dummy2"
 
-    def setUp(self):
+
+    def _get_store_session(self, use_default_context=True):
         """ Return initialized SuRF store and session objects. """
 
         kwargs = {"reader": "virtuoso_protocol",
@@ -24,38 +25,59 @@ class TestVirtuosoProtocol(TestCase):
                   "endpoint" : ENDPOINT,
                   "use_subqueries" : True,
                   "combine_queries" : True,
-                  "default_context": self.CONTEXT}
+                  "default_write_context": self.CONTEXT}
 
-        self.store = surf.Store(**kwargs)
-        self.session = surf.Session(self.store)
+        if use_default_context:
+            kwargs["default_context"] = self.CONTEXT
+
+        store = surf.Store(**kwargs)
+        session = surf.Session(store)
 
         # Fresh start!
-        self.store.clear(self.CONTEXT)
+        store.clear(self.CONTEXT)
 
-        Person = self.session.get_class(surf.ns.FOAF + "Person")
+        Person = session.get_class(surf.ns.FOAF + "Person")
         for name in ["John", "Mary", "Jane"]:
             # Some test data.
-            person = self.session.get_resource("http://%s" % name, Person)
+            person = session.get_resource("http://%s" % name, Person)
             person.foaf_name = name
             person.save()
 
+        return store, session
+
+    def test_missing_default_context(self):
+        """ Test read & write without default_context set. """
+
+        _, session = self._get_store_session(use_default_context=False)
+
+        Person = session.get_class(surf.ns.FOAF + "Person")
+        john = session.get_resource("http://John", Person)
+        john.remove()
+        self.assertTrue(not john.is_present())
+
+        john.save()
+        self.assertTrue(john.is_present())
+
     def test_same_as_inference_works(self):
+        """ Test owl:sameAs inferencing. """
+
+        store, session = self._get_store_session()
         # Let's say Jonathan is the same Person as John
-        Person = self.session.get_class(surf.ns.FOAF["Person"])
-        john = self.session.get_resource("http://John", Person)
+        Person = session.get_class(surf.ns.FOAF["Person"])
+        john = session.get_resource("http://John", Person)
         john.load()
 
-        jonathan = self.session.get_resource("http://Jonathan", Person)
+        jonathan = session.get_resource("http://Jonathan", Person)
         jonathan.foaf_homepage = 'http://example.com'
 
         john[surf.ns.OWL['sameAs']] = jonathan
-        self.session.commit()
+        session.commit()
 
-        self.store.reader.define = 'input:same-as "yes"'
+        store.reader.define = 'input:same-as "yes"'
 
         query = select("?s").from_(self.CONTEXT)\
                             .where((jonathan.subject, surf.ns.FOAF['name'], '?s'))
-        r = self.store.execute_sparql(unicode(query))
+        r = store.execute_sparql(unicode(query))
 
         self.assertEquals(set(entry['s'] for entry in r["results"]["bindings"]),
                           set([john.foaf_name[0]]))
