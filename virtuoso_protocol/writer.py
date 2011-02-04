@@ -49,7 +49,6 @@ class WriterPlugin(SPARQLWriterPlugin):
         context = kwargs.get("default_write_context")
         self.__default_write_context = (URIRef(unicode(context)) if context
                                                                  else None)
-        print self.__default_write_context
 
         # By default set combine_queries which Virtuoso supports
         if "combine_queries" not in kwargs:
