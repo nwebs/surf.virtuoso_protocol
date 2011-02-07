@@ -48,7 +48,8 @@ setup(
     keywords = 'python Virtuoso SPARQL RDF resource mapper',
     test_suite = "nose.collector",
     packages=['virtuoso_protocol'],
-    install_requires=['surf.sparql_protocol>=1.0.0',],
+    # TODO Broken, see http://code.google.com/p/surfrdf/issues/detail?id=56
+    #install_requires=['surf.sparql_protocol>=1.0.0',],
     setup_requires=['nose>=0.11'],
     entry_points={
 		'surf.plugins.reader': 'virtuoso_protocol = virtuoso_protocol.reader:ReaderPlugin',
