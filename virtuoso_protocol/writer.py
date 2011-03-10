@@ -44,6 +44,8 @@ from reader import ReaderPlugin
 
 class WriterPlugin(SPARQLWriterPlugin):
     def __init__(self, *args, **kwargs):
+        self.define = kwargs.pop('define', None)
+
         # The write_context will be used if no context is given. Virtuoso needs
         #   a context by default on write access.
         context = kwargs.get("default_write_context")
@@ -92,6 +94,31 @@ class WriterPlugin(SPARQLWriterPlugin):
             inverse = kwargs.get("inverse")
             query = self.__prepare_delete_many_query(items, context, inverse)
             self.__execute(query)
+
+    def __execute(self, *queries):
+        """ Execute several queries. """
+        
+        translated = [unicode(query) for query in queries]  
+        if self.__combine_queries:
+            translated = ["\n".join(translated)]
+
+        define_clause = self.define and "DEFINE %s " % self.define or ""
+        try:
+            for query_str in translated:
+                query_str = define_clause + query_str
+                self.log.debug(query_str)
+                self.__sparql_wrapper.setQuery(query_str)
+                self.__sparql_wrapper.query()
+
+            return True
+
+        except EndPointNotFound, _:
+            raise SparqlWriterException("Endpoint not found"), None, sys.exc_info()[2]
+        except QueryBadFormed, _:
+            raise SparqlWriterException("Bad query: %s" % query_str), None, sys.exc_info()[2]
+        except Exception, e:
+            msg = "Exception: %s (query: %s)" % (e, query_str)
+            raise SparqlWriterException(msg), None, sys.exc_info()[2]
 
     # Overloaded methods
 
