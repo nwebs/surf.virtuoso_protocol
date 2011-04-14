@@ -102,10 +102,10 @@ class WriterPlugin(SPARQLWriterPlugin):
         if self.__combine_queries:
             translated = ["\n".join(translated)]
 
-        define_clause = self.define and "DEFINE %s " % self.define or ""
+        define_clause = self.define and "DEFINE %s\n" % self.define or ""
         try:
             for query_str in translated:
-                query_str = define_clause + query_str
+                query_str = define_clause + query_str + '\n'
                 self.log.debug(query_str)
                 self.__sparql_wrapper.setQuery(query_str)
                 self.__sparql_wrapper.query()

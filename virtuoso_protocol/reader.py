@@ -95,7 +95,7 @@ class ReaderPlugin(SPARQLReaderPlugin):
     def execute_sparql(self, q_string, *args, **kwargs):
         define_clause = self._define_clause()
         if define_clause:
-            q_string = define_clause + ' ' + q_string
+            q_string = define_clause + '\n' + q_string + '\n'
 
         return SPARQLReaderPlugin.execute_sparql(self, q_string,
                                                  *args, **kwargs)
